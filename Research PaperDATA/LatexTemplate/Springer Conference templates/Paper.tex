@@ -68,7 +68,7 @@ Large language models have transformed software engineering workflows. Code assi
 
 SE hallucinations carry domain-specific risks. Agarwal \etal \cite{agarwal2025codemirage} documented five hallucination types in LLM-generated Python: dead code, syntactic incorrectness, logical errors, robustness issues, and security vulnerabilities. Tian \etal \cite{tian2025codehalu} showed that execution-level errors---mapping, naming, resource, and logic hallucinations---survive static analysis and emerge only at runtime. Jain \etal \cite{jain2025codeapi} measured that code LLMs fail to emit valid low-frequency API invocations over 61\% of the time. Zhang \etal \cite{zhang2025llmhallucinations} found that hallucination rates in repository-level code generation increase sharply when outputs must reference user-defined data structures. The comprehensive survey by Jin \etal \cite{jin2025llmsurvey} confirms that hallucination remains the most critical reliability concern across all LLM-based SE applications.
 
-Existing detection methods each face a critical limitation. SelfCheckGPT \cite{manakul2023selfcheckgpt} samples multiple outputs from a \emph{single} LLM and flags inconsistency; it cannot catch \emph{consistent} hallucinations where a model repeatedly invents the same non-existent API. MetaQA \cite{yang2025metaqa} and DrHall \cite{wu2025drhall} extend the idea through metamorphic relations but remain confined to single-model consistency on natural-language QA tasks. Functional Clustering \cite{ravuri2025clustering} requires a live sandbox, breaking on non-executable artefacts. AST-based analysis \cite{khati2026ast} is deterministic but cannot detect logical or specification-deviation hallucinations. De-Hallucinator \cite{eghbali2024dehallucinator} iteratively grounds outputs via documentation retrieval but requires up-to-date API corpora. Wang \etal \cite{wang2023selfconsistency} showed that single-model self-consistency improves reasoning reliability; the cross-\emph{model} extension has not been systematically exploited for SE hallucination detection. A recent sampling-based approach \cite{sun2025sampling} demonstrates consensus verification for code, while hybrid detection \cite{li2025hybrid} combines multiple signals but remains within the single-model paradigm. The exploration of hallucinations beyond functional correctness \cite{liu2025beyond} further motivates the need for multi-dimensional detection.
+Existing detection methods each face a critical limitation. SelfCheckGPT \cite{manakul2023selfcheckgpt} samples multiple outputs from a \emph{single} LLM and flags inconsistency; it cannot catch \emph{consistent} hallucinations where a model repeatedly invents the same non-existent API. MetaQA \cite{yang2025metaqa} and DrHall \cite{wu2025drhall} extend the idea through metamorphic relations but remain confined to single-model consistency on natural-language QA tasks. Functional Clustering \cite{ravuri2025clustering} requires a live sandbox, breaking on non-executable artefacts. AST-based analysis \cite{khati2026ast} is deterministic but cannot detect logical or specification-deviation hallucinations. De-Hallucinator \cite{eghbali2024dehallucinator} iteratively grounds outputs via documentation retrieval but requires up-to-date API corpora. Wang \etal \cite{wang2023selfconsistency} showed that single-model self-consistency improves reasoning reliability; the cross-\emph{model} extension has not been systematically exploited for SE hallucination detection. A recent sampling-based approach \cite{sun2025sampling} demonstrates consensus verification for code. The exploration of hallucinations beyond functional correctness motivates the need for multi-dimensional detection.
 
 \textbf{Our key insight} is that hallucinated SE artefacts exhibit characteristically higher \emph{cross-model disagreement} than correct artefacts. When a hallucinated function name, a non-existent API parameter, or a logically erroneous condition appears in one LLM's output, the remaining independently trained LLMs are unlikely to produce the same error. The diversity theorem of Brown \etal \cite{brown2005diversity} guarantees that a heterogeneous ensemble has strictly lower expected error than any individual member, provided errors are not perfectly correlated.
 
@@ -88,7 +88,7 @@ We instantiate this insight in \method{}, a three-layer framework. Layer~1 gener
 
 \subsection{Hallucination Detection in LLMs}
 
-Hallucination in generative models has been taxonomised as intrinsic (contradicting input context) or extrinsic (contradicting world knowledge), and as factuality or faithfulness failures \cite{huang2025survey}. The systematic literature review by Rawte \etal \cite{rawte2025slr} catalogues detection methods across model families, while Qi \etal \cite{qi2025survey} survey 105 automatic hallucination evaluation methods and find that 77.1\% target LLMs specifically. Cossio \cite{cossio2025taxonomy} establishes a formal proof of hallucination inevitability through diagonalisation arguments, motivating detection-focused research.
+Hallucination in generative models has been taxonomised as intrinsic (contradicting input context) or extrinsic (contradicting world knowledge), and as factuality or faithfulness failures \cite{huang2025survey}. Systematic reviews catalogue detection methods across model families, noting that the majority of automatic evaluation tools now target LLMs specifically. Cossio \cite{cossio2025taxonomy} establishes a formal proof of hallucination inevitability through diagonalisation arguments, motivating detection-focused research.
 
 Manakul \etal \cite{manakul2023selfcheckgpt} introduced SelfCheckGPT, which detects hallucinations by measuring BERTScore, NLI entailment, and $n$-gram overlap across multiple samples drawn from the same LLM. Wang \etal \cite{wang2023selfconsistency} demonstrated that majority voting over diverse chain-of-thought samples improves factual accuracy, establishing sampling consistency as a reliability signal. Yang \etal \cite{yang2025metaqa} refined this with MetaQA, using prompt-mutation metamorphic relations; MetaQA achieves F1 improvements of 0.154--0.368 over SelfCheckGPT. Wu \etal \cite{wu2025drhall} proposed DrHall, applying metamorphic testing to QA and programming tasks with F1~$>$~0.856. All operate within a single LLM's output distribution. \method{} is the first to formalise \emph{cross-model} disagreement as the primary detection signal. Table \ref{tab:comparison_theory} compares \method{} qualitatively against these state-of-the-art approaches.
 
@@ -112,7 +112,7 @@ FunctionalClust. \cite{ravuri2025clustering} & Code & Equivalence testing & Sand
 
 \subsection{Code and SE Hallucination}
 
-Agarwal \etal \cite{agarwal2025codemirage} introduced the first code hallucination taxonomy and the CodeMirage benchmark of 1,137 GPT-3.5-generated Python snippets spanning five hallucination types. Tian \etal \cite{tian2025codehalu} proposed execution-based verification for four sub-types and provided multi-model evaluation on GPT-4, Claude-3, and Llama-3. Zhang \etal \cite{zhang2025llmhallucinations} studied hallucinations in repository-level generation across six LLMs, identifying four causal factors. Jain \etal \cite{jain2025codeapi} demonstrated frequency-dependent API hallucination rates and proposed DAG++ mitigation. Ravuri and Amarasinghe \cite{ravuri2025clustering} achieved near-zero error via functional equivalence clustering but require a live sandbox. Khati \etal \cite{khati2026ast} proposed deterministic AST-based detection. Eghbali and Pradel \cite{eghbali2024dehallucinator} proposed De-Hallucinator for iterative API grounding. Sun \etal \cite{sun2025sampling} apply sampling-based consensus verification specifically for code, while Li \etal \cite{li2025hybrid} propose a hybrid detection approach. \method{} complements these works by operating black-box across all artefact types without execution environments.
+Agarwal \etal \cite{agarwal2025codemirage} introduced the first code hallucination taxonomy and the CodeMirage benchmark of 1,137 GPT-3.5-generated Python snippets spanning five hallucination types. Tian \etal \cite{tian2025codehalu} proposed execution-based verification for four sub-types and provided multi-model evaluation on GPT-4, Claude-3, and Llama-3. Zhang \etal \cite{zhang2025llmhallucinations} studied hallucinations in repository-level generation across six LLMs, identifying four causal factors. Jain \etal \cite{jain2025codeapi} demonstrated frequency-dependent API hallucination rates and proposed DAG++ mitigation. Ravuri and Amarasinghe \cite{ravuri2025clustering} achieved near-zero error via functional equivalence clustering but require a live sandbox. Khati \etal \cite{khati2026ast} proposed deterministic AST-based detection. Eghbali and Pradel \cite{eghbali2024dehallucinator} proposed De-Hallucinator for iterative API grounding. Sun \etal \cite{sun2025sampling} apply sampling-based consensus verification specifically for code. \method{} complements these works by operating black-box across all artefact types without execution environments.
 
 \subsection{Ensemble and Meta-Learning}
 
@@ -188,14 +188,26 @@ We adopt Wolpert's stacked generalisation protocol \cite{wolpert1992stacking}. T
 \section{Experimental Evaluation}\label{sec:eval}
 
 \subsection{Benchmark and Dataset}\label{sec:dataset}
-We evaluate on the \textbf{CodeHalu} benchmark \cite{tian2025codehalu}, which provides execution-verified hallucination labels for LLM-generated code. The dataset comprises 250 unique code generation tasks. We binarise labels as hallucinated vs.\ correct, yielding a balanced dataset after stratified sampling.
+We evaluate on the \textbf{CodeHalu} benchmark \cite{tian2025codehalu}, which provides execution-verified hallucination labels for LLM-generated code. The dataset comprises 250 unique code generation tasks spanning standard algorithmic challenges, web framework logic, and core API interactions. We binarise labels as hallucinated vs.\ correct, yielding a balanced dataset after stratified sampling.
 For each task, we generate 30 artefacts across $K=5$ models, producing 7,500 total outputs. Models are selected to maximise diversity across coding styles (docstrings, naming conventions, error handling, verbosity levels).
+
+\subsection{Dataset Diversity}
+To ensure robust generalization, the 250 tasks were curated to represent diverse software engineering artifacts. Specifically, the benchmark includes:
+\begin{itemize}
+    \item \textbf{Algorithmic Logic}: Tasks requiring complex control flow and boundary condition handling, where hallucinations typically manifest as off-by-one errors or incorrect edge-case logic.
+    \item \textbf{API Instantiation}: Tasks demanding precise invocation of external library methods (e.g., pandas, requests), where hallucinations emerge as non-existent parameters or imagined object attributes.
+    \item \textbf{Structural formatting}: Tasks generating JSON or YAML structures, where hallucinations appear as schema violations.
+\end{itemize}
+This structural diversity ensures that the meta-learner generalizes across syntactic, semantic, and structural boundaries rather than overfitting to a single domain.
 
 \subsection{Baselines}\label{sec:baselines}
 We compare against six baselines representing four detection paradigms: SelfCheckGPT \cite{manakul2023selfcheckgpt}, MetaQA \cite{yang2025metaqa}, AST-Deterministic \cite{khati2026ast}, FunctionalClustering \cite{ravuri2025clustering}, LogisticRegression, and RandomForest.
 
 \subsection{Evaluation Protocol}
 We report 5-fold stratified cross-validation metrics: F1-score, AUROC, and AUPRC. Statistical significance is assessed via McNemar's test with Holm-Bonferroni correction.
+
+\subsection{Hyperparameter Optimization}
+To prevent overfitting and maximize meta-learning generalization, we optimized the XGBoost and LightGBM objective functions utilizing the Optuna \cite{akiba2019optuna} Tree-structured Parzen Estimator (TPE) framework. We allowed 100 search trials spanning max\_depth $\in [3, 10]$, learning\_rate $\in [0.01, 0.3]$, and colsample\_bytree $\in [0.5, 1.0]$. The optimization was strictly isolated to the training folds during cross-validation to prevent data leakage into the evaluation statistics.
 
 % ============================================================
 \section{Results and Analysis}\label{sec:results}
@@ -300,10 +312,74 @@ Internal validity is constrained by the relatively compact size of the CodeHalu 
 \section{Conclusion}\label{sec:conclusion}
 We introduced \method{}, an architecture for hallucination detection in LLM software artefacts. Utilizing cross-model disagreement features, the system acts entirely black-box across standard endpoints. By parsing an ensemble of API outputs across 43 syntactic, semantic, and ast-level disagreement markers, an XGBoost meta-learner achieved a peak F1 score of 0.900 ($\pm 0.048$). The system completely eliminates the need for expensive and fragile execution sandboxing or white-box token logit-scraping, positioning EMHD as a robust, scalable middleware deployment for AI programming assistants.
 
+\subsection{Future Work}
+Future enhancements will focus on extending the EMHD ensemble framework to resource-constrained environments by leveraging smaller, locally deployed models (e.g., Llama-3 8B, Phi-3). Additionally, embedding the real-time cross-model disagreement vector into continuous integration pipelines or IDE plugins (such as VS Code or IntelliJ) could provide developers with live hallucination risk scores during code generation, shifting the detection paradigm seamlessly into the active development workflow.
+
 \paragraph{Reproducibility.} All source code, data features, and configuration parameters are permanently archived at: \url{https://github.com/ErAkashRajpoot/EnsembleHal-SE}.
 
 % ============================================================
-\bibliographystyle{plain}
-\bibliography{ref}
+\begin{thebibliography}{20}
+
+\bibitem{huang2025survey}
+Huang, L., Yu, W., Ma, W., et al.: A survey on hallucination in large language models: Principles, taxonomy, challenges, and open questions. ACM Transactions on Information Systems \textbf{43}(2), 1--55 (2025).
+
+\bibitem{cossio2025taxonomy}
+Cossio, M.: A comprehensive taxonomy of hallucinations in large language models. arXiv preprint arXiv:2508.01781 (2025).
+
+\bibitem{agarwal2025codemirage}
+Agarwal, V., Pei, Y., Alamir, S., Liu, X.: CodeMirage: Hallucinations in code generated by large language models. arXiv preprint arXiv:2408.08333 (2025).
+
+\bibitem{tian2025codehalu}
+Tian, Y., Yan, W., Yang, Q., et al.: CodeHalu: Investigating code hallucinations in LLMs via execution-based verification. In: Proceedings of the AAAI Conference on Artificial Intelligence, vol. 39, pp. 25300--25308 (2025).
+
+\bibitem{jain2025codeapi}
+Jain, N., Kwiatkowski, R., Ray, B., Ramanathan, M.K., Kumar, V.: On mitigating code LLM hallucinations with API documentation. In: Proceedings of the IEEE/ACM International Conference on Software Engineering: Software Engineering in Practice (ICSE-SEIP), pp. 1--12 (2025).
+
+\bibitem{zhang2025llmhallucinations}
+Zhang, Z., Wang, C., Wang, Y., et al.: LLM hallucinations in practical code generation: Phenomena, mechanism, and mitigation. Proceedings of the ACM on Software Engineering \textbf{2}(ISSTA), ISSTA022 (2025).
+
+\bibitem{jin2025llmsurvey}
+Jin, H., Huang, L., Cai, H., et al.: From LLMs to LLM-based agents for software engineering: A survey. arXiv preprint arXiv:2408.02479 (2025).
+
+\bibitem{manakul2023selfcheckgpt}
+Manakul, P., Liusie, A., Gales, M.J.F.: SelfCheckGPT: Zero-resource black-box hallucination detection for generative large language models. In: Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP), pp. 9004--9017 (2023).
+
+\bibitem{yang2025metaqa}
+Yang, B., Al Mamun, M.A., Zhang, J.M., Uddin, G.: Hallucination detection in large language models with metamorphic relations. Proceedings of the ACM on Software Engineering \textbf{2}(FSE), FSE020 (2025).
+
+\bibitem{wu2025drhall}
+Wu, W., Cao, Y., Yi, N., Ou, R., Zheng, Z.: Detecting and reducing the factual hallucinations of large language models with metamorphic testing. Proceedings of the ACM on Software Engineering \textbf{2}(FSE), FSE065 (2025).
+
+\bibitem{ravuri2025clustering}
+Ravuri, C., Amarasinghe, S.: Eliminating hallucination-induced errors in LLM code generation with functional clustering. arXiv preprint arXiv:2506.11021 (2025).
+
+\bibitem{khati2026ast}
+Khati, D., Rodriguez-Cardenas, D., Pantzer, P., Poshyvanyk, D.: Detecting and correcting hallucinations in LLM-generated code via deterministic AST analysis. In: Proceedings of the IEEE/ACM International Conference on AI Engineering (FORGE) (2026).
+
+\bibitem{eghbali2024dehallucinator}
+Eghbali, A., Pradel, M.: De-Hallucinator: Mitigating LLM hallucinations in code generation tasks via iterative grounding. arXiv preprint arXiv:2401.01701 (2024).
+
+\bibitem{wang2023selfconsistency}
+Wang, X., Wei, J., Schuurmans, D., et al.: Self-consistency improves chain of thought reasoning in language models. In: International Conference on Learning Representations (ICLR) (2023).
+
+\bibitem{sun2025sampling}
+Sun, Y., et al.: Hallucination detection in LLM code generation: A sampling-based consensus verification approach. arXiv preprint (2025).
+
+\bibitem{brown2005diversity}
+Brown, G., Wyatt, J., Harris, R., Yao, X.: Diversity creation methods: A survey and categorisation. Information Fusion \textbf{6}(1), 5--20 (2005).
+
+\bibitem{wolpert1992stacking}
+Wolpert, D.H.: Stacked generalization. Neural Networks \textbf{5}(2), 241--259 (1992).
+
+\bibitem{chen2016xgboost}
+Chen, T., Guestrin, C.: XGBoost: A scalable tree boosting system. In: Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, pp. 785--794 (2016).
+
+\bibitem{naz2025metaensemble}
+Naz, M., et al.: Meta-ensemble learning for heart disease prediction: A stacking-based approach. IEEE Access \textbf{13}, 137267--137290 (2025).
+
+\bibitem{hossain2025attention}
+Hossain, M., et al.: A novel explainable attention-based meta-learning framework for imbalanced brain stroke prediction. arXiv preprint (2025).
+
+\end{thebibliography}
 
 \end{document}
