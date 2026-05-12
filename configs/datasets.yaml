@@ -1,0 +1,41 @@
+version: 1
+
+defaults:
+  format: normalized_jsonl
+  contamination_flag: false
+
+datasets:
+  - name: codemirage
+    path: data/raw/codemirage/normalized.jsonl
+    artefact_type: code
+
+  - name: codehalu
+    path: data/raw/codehalu/normalized.jsonl
+    artefact_type: code
+
+  # CloudAPIBench excluded: dataset not publicly available
+  # - name: cloudapibench
+  #   path: data/raw/cloudapibench/normalized.jsonl
+  #   artefact_type: api
+
+  - name: defects4j
+    path: data/raw/defects4j/normalized.jsonl
+    artefact_type: explanation
+
+  - name: humaneval
+    path: data/raw/humaneval/normalized.jsonl
+    artefact_type: code
+    contamination_flag: true
+
+  - name: mbpp
+    path: data/raw/mbpp/normalized.jsonl
+    artefact_type: code
+    contamination_flag: true
+
+  - name: codereviewer
+    path: data/raw/codereviewer/normalized.jsonl
+    artefact_type: review
+
+  - name: tl-codesum
+    path: data/raw/tl-codesum/normalized.jsonl
+    artefact_type: doc

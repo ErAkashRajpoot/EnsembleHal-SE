@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExperimentRegistryEntry",
+  "type": "object",
+  "required": [
+    "model_id",
+    "model_provider",
+    "has_logprobs",
+    "temperature",
+    "max_tokens",
+    "artefact_type",
+    "dataset_source",
+    "task_id",
+    "prompt_version",
+    "hallucination_label",
+    "contamination_flag",
+    "split",
+    "generation_mode"
+  ],
+  "properties": {
+    "model_id": {"type": "string"},
+    "model_provider": {"type": "string"},
+    "has_logprobs": {"type": "boolean"},
+    "temperature": {"type": "number"},
+    "max_tokens": {"type": "integer", "minimum": 1},
+    "artefact_type": {
+      "type": "string",
+      "enum": ["code", "api", "test", "doc", "review", "explanation"]
+    },
+    "dataset_source": {"type": "string"},
+    "task_id": {"type": "string"},
+    "prompt_version": {"type": "string"},
+    "hallucination_label": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "contamination_flag": {"type": "boolean"},
+    "split": {"type": "string", "enum": ["train", "val", "test"]},
+    "generation_mode": {"type": "string", "enum": ["greedy", "sampled"]},
+    "sample_index": {"type": "integer", "minimum": 0},
+    "output_text": {"type": "string"},
+    "input_tokens": {"type": "integer", "minimum": 0},
+    "output_tokens": {"type": "integer", "minimum": 0},
+    "logprobs": {"type": ["object", "null"]},
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": true
+}

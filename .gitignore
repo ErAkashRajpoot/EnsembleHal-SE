@@ -1,0 +1,76 @@
+# Environments
+.env
+.venv
+.venv311
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+coverage.xml
+*.cover
+*.py,cover
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Agentic / AI
+.gemini/
+brain/
+scratch/
+
+# Large Datasets / Outputs
+data/**/*.jsonl
+data/**/*.csv
+data/**/*.json
+data/**/*.pt
+data/**/*.bin
+data/**/*.model
+data/generations/*
+data/features/*
+data/results/*
+data/results_offline/*
+!data/**/.gitkeep
+
+# Temporary files / Archives
+*.zip
+*.tar.gz
+*.rar
+*.log
+IMPLEMENTATION_PLAN.zip

@@ -1,0 +1,49 @@
+version: 1
+
+defaults:
+  temperature: 0.7
+  samples_per_task: 5
+  include_greedy_sample: true
+  greedy_temperature: 0.0
+  max_tokens: 512
+
+# ── Offline Models ──────────────────────────────────────────────────────
+# These use the synthetic OfflineClient — zero API calls, zero cost,
+# no rate limits. Each model has a different "style profile" that produces
+# genuinely different code, enabling meaningful disagreement analysis.
+
+models:
+  - model_id: offline/model-alpha
+    providers:
+      - offline
+    has_logprobs: true
+    max_tokens: 512
+    notes: "Style: Google docstrings, snake_case, try/except, verbose"
+
+  - model_id: offline/model-beta
+    providers:
+      - offline
+    has_logprobs: true
+    max_tokens: 512
+    notes: "Style: NumPy docstrings, camelCase, assert-based, terse"
+
+  - model_id: offline/model-gamma
+    providers:
+      - offline
+    has_logprobs: true
+    max_tokens: 512
+    notes: "Style: Sphinx docstrings, snake_case, if-check, very verbose"
+
+  - model_id: offline/model-delta
+    providers:
+      - offline
+    has_logprobs: true
+    max_tokens: 512
+    notes: "Style: Plain docstrings, snake_case, try/except, minimal"
+
+  - model_id: offline/model-epsilon
+    providers:
+      - offline
+    has_logprobs: true
+    max_tokens: 512
+    notes: "Style: Google docstrings, camelCase, raise-based, moderate"

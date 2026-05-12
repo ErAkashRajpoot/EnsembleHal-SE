@@ -1,0 +1,3 @@
+version: 1
+random_seed: 42
+index_output_dir: data/index
